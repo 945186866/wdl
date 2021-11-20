@@ -1,0 +1,37 @@
+一、Conditional Types 条件类型
+1.infer 推断
+用法：type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
+使用infer推断元素类型，infre会引入一个新的泛型类型变量Item，推断出Array中元素的类型。
+结果：无需用户去考虑和分析我们需要的类型的结构。
+疑问：...args: never[] 什么意思
+当从具有多个调用签名的类型（例如重载函数的类型）进行推断时，将从最后一个签名进行推断
+
+2.联合类型作用于条件类型是，联合的每个成员都要进行一次条件判断，并对结果进行联合
+例如：
+type ToArray<Type> = Type extends any ? Type[] : never;
+
+type StrArrOrNumArr = ToArray<string | number>; 
+=>
+type StrArrOrNumArr = ToArray<string> | ToArray<number>
+可以使用[]将Type进行包裹当做一个类型来处理
+type ToArray<Type> = [Type] extends [any] ? Type[] : never;
+
+type StrArrOrNumArr = (string | number)[]
+
+二、Mapped Types 映射类型
+映射类型建立在索引签名的语法之上，索引签名用于声明未提前声明的属性类型
+1.可以采用PropertyKeys的联合（通过keyof的方式）来迭代key从而创建类型
+例如：
+type OptionsFlags<Type> = {
+  [Property in keyof Type]: boolean;
+}
+
+2. 可以使用readonly（可变性）和？（可选性）修饰符
+修饰符可以配合-/+作为前缀来使用 -：表示取消 +表示具有，默认是+ 
+
+3.as Typescript>=4.1支持
+使用as可以结合现有属性创建新的属性出来，例如可以对类型已知属性添加对应的get和set方法属性
+as对条件中的never类型采取过滤的措施而不是报错
+
+三、模板文字类型
+模板文字类型建立在字符串文字类型上，并且能够通过联合扩展成许多字符串
