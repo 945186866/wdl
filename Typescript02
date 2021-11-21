@@ -7,6 +7,7 @@
 当从具有多个调用签名的类型（例如重载函数的类型）进行推断时，将从最后一个签名进行推断
 
 2.联合类型作用于条件类型是，联合的每个成员都要进行一次条件判断，并对结果进行联合
+//注意：前提是联合类型用作泛型场景下：https://jishuin.proginn.com/p/763bfbd663cf
 例如：
 type ToArray<Type> = Type extends any ? Type[] : never;
 
